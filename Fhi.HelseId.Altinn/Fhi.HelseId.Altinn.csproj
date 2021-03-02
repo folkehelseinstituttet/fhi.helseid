@@ -5,15 +5,15 @@
     <Nullable>enable</Nullable>
     <LangVersion>8</LangVersion>
     <Configurations>Debug;Release</Configurations>
-    <id>Fhi.HelseId</id>
+    <id>Fhi.HelseId.Altinn</id>
     <Version>3.0.0</Version>
     <authors>Folkehelseinstituttet (FHI), Nasjonalt Helsenett (NHN)</authors>
     <projectUrl>https://github.com/folkehelseinstituttet/Fhi.HelseId</projectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <icon>https://github.com/folkehelseinstituttet/Fhi.HelseId/images/fhi.png</icon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Move Altinn functionality to separate package Fhi.HelseId.Altinn</PackageReleaseNotes>
-    <PackageDescription>Authentication and authorization component for access to NHN HelseId</PackageDescription>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageDescription>Support component for Fhi.HelseId to access Altinn</PackageDescription>
     <PackageCopyright>Copyright ©2020 Folkehelseinstituttet, Nasjonalt Helsenett NHN</PackageCopyright>
     <!-- Tags appear in the gallery and can be used for tag searches -->
     <tags>helseid, oauth</tags>
@@ -25,21 +25,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Web\HprServiceReference\ConnectedService.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Web\HprServiceReference\ConnectedService.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Analyzers" Version="3.1.9" />
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />

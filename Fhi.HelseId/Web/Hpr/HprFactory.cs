@@ -12,7 +12,10 @@ namespace Fhi.HelseId.Web.Hpr
     public interface IHprFactory
     {
         IHPR2ServiceChannel? ServiceProxy { get; }
+        
+        [Obsolete("Use CreateHprService")]
         IHprService CreateHprRepository();
+        IHprService CreateHprService();
     }
 
     public interface IGodkjenteHprKategoriListe
@@ -65,8 +68,10 @@ namespace Fhi.HelseId.Web.Hpr
             ServiceProxy.Open();
         }
 
-       
 
-        public IHprService CreateHprRepository() => new HprService(this,logger).LeggTilGodkjenteHelsepersonellkategorier(godkjenninger);
+        public IHprService CreateHprService() => new HprService(this, logger).LeggTilGodkjenteHelsepersonellkategorier(godkjenninger);
+
+        [Obsolete("Use CreateHprService")]
+        public IHprService CreateHprRepository() => CreateHprService();
     }
 }

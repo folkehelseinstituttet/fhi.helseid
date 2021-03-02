@@ -40,8 +40,8 @@ namespace Fhi.HelseId.Web.Hpr
                 SjekkWhitelist();
                 return;
             }
-            var hprRepository = _hprFactory.CreateHprRepository();
-            var erGodkjent = await hprRepository.SjekkGodkjenning(hprNummer);
+            var hprService = _hprFactory.CreateHprService();
+            var erGodkjent = await hprService.SjekkGodkjenning(hprNummer);
             if (erGodkjent)
             {
                 Logger.LogTrace("HprGodkjenningAuthorizationHandler: {Name} autentisert", userlogName);

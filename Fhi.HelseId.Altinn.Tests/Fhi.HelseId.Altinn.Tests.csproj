@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fhi.HelseId\Fhi.HelseId.csproj" />
+    <ProjectReference Include="..\Fhi.HelseId.Altinn\Fhi.HelseId.Altinn.csproj" />
   </ItemGroup>
 
   <ItemGroup>

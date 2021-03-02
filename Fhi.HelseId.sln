@@ -9,22 +9,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
-		CONTRIBUTING.md = CONTRIBUTING.md
 		Fhi.HelseId.CI.yml = Fhi.HelseId.CI.yml
 		.github\workflows\Fhi.HelseId.Nuget.yml = .github\workflows\Fhi.HelseId.Nuget.yml
+		license.txt = license.txt
 		nuget.config = nuget.config
 		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fhi.HelseId.Tests", "Fhi.HelseId.Tests\Fhi.HelseId.Tests.csproj", "{7ED5EF48-028C-4AB2-A26E-55BD6B20B9EB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ToolsHpr", "ToolsHpr", "{9B4A97D7-0EBA-4F6F-B315-95291BDC4725}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{01EA8EA1-FBAA-493B-9E21-08F5DD60BBD4}"
 	ProjectSection(SolutionItems) = preProject
 		ToolsHpr\FromVolven.txt = ToolsHpr\FromVolven.txt
 		ToolsHpr\GenerateOid9060.py = ToolsHpr\GenerateOid9060.py
 		ToolsHpr\readme.oid9060.md = ToolsHpr\readme.oid9060.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fhi.HelseId.Altinn", "Fhi.HelseId.Altinn\Fhi.HelseId.Altinn.csproj", "{4E08F9CB-A0E5-4C9A-A082-D338249C74D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fhi.HelseId.Altinn.Tests", "Fhi.HelseId.Altinn.Tests\Fhi.HelseId.Altinn.Tests.csproj", "{6809AEE6-1757-4B99-AD7F-A4F0B998FFAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,12 +43,20 @@ Global
 		{7ED5EF48-028C-4AB2-A26E-55BD6B20B9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ED5EF48-028C-4AB2-A26E-55BD6B20B9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ED5EF48-028C-4AB2-A26E-55BD6B20B9EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E08F9CB-A0E5-4C9A-A082-D338249C74D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E08F9CB-A0E5-4C9A-A082-D338249C74D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E08F9CB-A0E5-4C9A-A082-D338249C74D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E08F9CB-A0E5-4C9A-A082-D338249C74D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6809AEE6-1757-4B99-AD7F-A4F0B998FFAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6809AEE6-1757-4B99-AD7F-A4F0B998FFAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6809AEE6-1757-4B99-AD7F-A4F0B998FFAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6809AEE6-1757-4B99-AD7F-A4F0B998FFAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9B4A97D7-0EBA-4F6F-B315-95291BDC4725} = {DCBAE3A1-3C8A-4562-B9C3-0CCE7E65E794}
+		{01EA8EA1-FBAA-493B-9E21-08F5DD60BBD4} = {DCBAE3A1-3C8A-4562-B9C3-0CCE7E65E794}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86F7821B-A993-418C-A722-A7F42928741A}

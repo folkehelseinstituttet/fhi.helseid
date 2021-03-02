@@ -1,9 +1,11 @@
 infile = open("FromVolven.txt")
 outfile = open("..\Fhi.HelseId\Web\Hpr\Core\Kodekonstanter.g.cs","w")
-outfile.write("namespace Fhi.HelseId.Web.Hpr.Core\n");
+outfile.write('using System.Collections.Generic;\n')
+outfile.write("namespace Fhi.HelseId.Web.Hpr.Core\n")
 outfile.write("{\n")
 outfile.write("    public static partial class Kodekonstanter\n")
 outfile.write("    {\n")
+kodelist = []
 for line in infile:
     parts = line.split()
     kode=parts[0]
@@ -12,12 +14,18 @@ for line in infile:
     else:
         beskrivelse=parts[1] 
     term=beskrivelse.replace("/","_")       
-    outline =     '         public static OId9060 OId9060'+term+' = new OId9060("'+kode+')";\n'
+    outline =     '         public static OId9060 OId9060'+term+' = new OId9060("'+kode+'","'+beskrivelse+'");\n'
     outfile.write(outline)
-    outline =     '         public static OId9060 OId9060'+term+'Beskrivelse = new OId9060("'+beskrivelse+')";\n'
+    kodelist.append('OId9060'+term)
+    
+outfile.write("\n")
+outline =         '         public static List<OId9060> KodeList = new List<OId9060> {\n'
+outfile.write(outline)
+for o in kodelist:
+    outline =     '           '+o+',\n'
     outfile.write(outline)
 
-    
+outfile.write('             };\n')
 outfile.write("    }\n")
 outfile.write("}\n")
 outfile.close()

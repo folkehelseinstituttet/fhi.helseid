@@ -36,6 +36,8 @@ namespace Fhi.HelseId.Api
             return builder;
         }
 
+        
+
         public static void AddHelseIdAuthorization(this IServiceCollection services, IHelseIdApiKonfigurasjon configAuth)
         {
             services.AddAuthorization(

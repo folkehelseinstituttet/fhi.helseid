@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fhi.HelseId.Web.Hpr;
@@ -37,7 +37,6 @@ namespace Fhi.HelseId.Tests.Hpr
             var repositorySut = new HprService(factory, logger);
             repositorySut.LeggTilGodkjenteHelsepersonellkategori(Kodekonstanter.OId9060Lege);
             var result = await repositorySut.HentPerson(hprnummer.ToString());
-
             Assert.That(result, Is.Not.Null);
             Assert.Multiple(() =>
             {
@@ -45,9 +44,7 @@ namespace Fhi.HelseId.Tests.Hpr
                 Assert.That(result.FysiskeAdresser.Length, Is.EqualTo(1));
                 Assert.That(result.FysiskeAdresser[0].Gateadresse, Is.EqualTo(person.FysiskeAdresser[0].Gateadresse));
             });
-
         }
-
 
         [Test]
         public async Task AtPersonErLege()
@@ -62,14 +59,13 @@ namespace Fhi.HelseId.Tests.Hpr
             var result = await repositorySut.SjekkGodkjenning(hprnummer.ToString());
 
             Assert.That(result);
-
         }
 
         [Test]
         public async Task AtPersonIkkeErLege()
         {
             const int hprnummer = 123456789;
-            var person = CreateStubPersonAnnet(hprnummer);
+            var person = StubPersonAnnet.CreateStubPersonAnnet(hprnummer);
             channel.HentPersonAsync(Arg.Any<int>(), null).Returns(person);
 
             var repositorySut = new HprService(factory, logger);
@@ -137,105 +133,51 @@ namespace Fhi.HelseId.Tests.Hpr
             Assert.That(result);
         }
 
-
-
-
-        private Person CreateStubPersonAnnet(int hpr)
+        [Test]
+        public async Task AtFlereGodkjenningerKanLesesFraPerson()
         {
-            var person = new Person
+            const int hprnummer = 123456789;
+            var person = new TestPersonMedFlereGodkjenninger(hprnummer);
+            channel.HentPersonAsync(Arg.Any<int>(), null).Returns(person);
+
+            var repositorySut = new HprService(factory, logger);
+            repositorySut.LeggTilGodkjenteHelsepersonellkategori(Kodekonstanter.OId9060Sykepleier);
+            repositorySut.LeggTilGodkjenteHelsepersonellkategori(Kodekonstanter.OId9060Lege);
+
+            bool result = await repositorySut.SjekkGodkjenning(hprnummer.ToString());
+
+            Assert.That(result, "Hprnummer ikke godkjent");
+
+            repositorySut.LeggTilGodkjenteHelsepersonellKategoriListe(new List<OId9060>
+                {Kodekonstanter.OId9060Sykepleier, Kodekonstanter.OId9060Lege});
+
+            var godkjenninger = await repositorySut.HentGodkjenninger(hprnummer.ToString());
+
+            Assert.Multiple(() =>
             {
-                HPRNummer = hpr,
-                FysiskeAdresser =
-                    new[] { new FysiskAdresse { Gateadresse = "Hovedgata 23", Postkode = "1234", Poststed = "Oslo" } },
-                Godkjenninger = new[]
-                {
-                    new Godkjenning
-                    {
-                        Autorisasjon = new Kode {Aktiv = true, },
-                        Helsepersonellkategori = new Kode {Verdi= "XX"},
-                        Gyldig = new Periode { Fra = DateTime.Today.AddDays(-1), Til=null},
-                        Suspensjonsperioder = Array.Empty<Suspensjonsperiode>()
-                    },
-
-                }
-            };
-            return person;
-        }
-
-    }
-
-    internal class TestSykePleier : Person
-    {
-        internal TestSykePleier(int hprnummer)
-        {
-            HPRNummer = hprnummer;
-            FysiskeAdresser =
-                new[] { new FysiskAdresse { Gateadresse = "Hovedgata 23", Postkode = "1234", Poststed = "Oslo" } };
-            Godkjenninger = new[]
-            {
-                new Godkjenning
-                {
-                    Autorisasjon = new Kode {Aktiv = true,},
-                    Helsepersonellkategori = new Kode {Verdi = "SP"},
-                    Gyldig = new Periode {Fra = DateTime.Today.AddDays(-1), Til = null},
-                    Suspensjonsperioder = Array.Empty<Suspensjonsperiode>()
-                }
-
-            };
-        }
-    }
-
-
-    internal class TestLege : Person
-    {
-        internal TestLege(int hprnummer)
-        {
-            HPRNummer = hprnummer;
-            FysiskeAdresser =
-                new[] { new FysiskAdresse { Gateadresse = "Hovedgata 23", Postkode = "1234", Poststed = "Oslo" } };
-            Godkjenninger = new[]
-            {
-                new Godkjenning
-                {
-                    Autorisasjon = new Kode {Aktiv = true,},
-                    Helsepersonellkategori = new Kode {Verdi = "LE"},
-                    Gyldig = new Periode {Fra = DateTime.Today.AddDays(-1), Til = null},
-                    Suspensjonsperioder = Array.Empty<Suspensjonsperiode>()
-                }
-
-            };
-        }
-
-        internal TestLege Suspender()
-        {
-            var suspensjonsperiode = new Suspensjonsperiode { Periode = new Periode { Fra = DateTime.Today.AddDays(-1), Til = null } };
-            Godkjenninger[0].Suspensjonsperioder = new[] { suspensjonsperiode };
-            return this;
-        }
-
-        internal TestLege EndreTilUgyldig()
-        {
-            Godkjenninger[0].Gyldig = new Periode { Fra = DateTime.Today.AddDays(1), Til = null };
-            return this;
-        }
-
-        internal TestLege SuspenderTillegg()
-        {
-            var godkjenninger = Godkjenninger.ToList();
-            var suspensjonsperiode = new Suspensjonsperiode { Periode = new Periode { Fra = DateTime.Today.AddDays(-1), Til = null } };
-            godkjenninger.Add(new Godkjenning
-            {
-                Autorisasjon = new Kode { Aktiv = true, },
-                Helsepersonellkategori = new Kode { Verdi = "LE" },
-                Gyldig = new Periode { Fra = DateTime.Today.AddDays(-1), Til = null },
-                Suspensjonsperioder = new[] { suspensjonsperiode }
+                Assert.That(godkjenninger.Count, Is.EqualTo(2), "Antall godkjenninger ble galt");
+                Assert.That(godkjenninger, Does.Contain(Kodekonstanter.OId9060Sykepleier));
+                Assert.That(godkjenninger, Does.Contain(Kodekonstanter.OId9060Lege));
+                Assert.That(godkjenninger, Does.Not.Contain(Kodekonstanter.OId9060Jordmor));
             });
-            return this;
         }
 
+
+        [Test]
+        public async Task AtViKanLeggeTilKategorierUtenDuplikater()
+        {
+            const int hprnummer = 123456789;
+            var person = new TestPersonMedFlereGodkjenninger(hprnummer);
+            channel.HentPersonAsync(Arg.Any<int>(), null).Returns(person);
+            var service = new HprService(factory, logger);
+            service.LeggTilAlleKategorier();
+            var godkjenninger1 = await service.HentGodkjenninger(hprnummer.ToString());
+            service.LeggTilGodkjenteHelsepersonellkategori(Kodekonstanter.OId9060Sykepleier);
+            service.LeggTilGodkjenteHelsepersonellkategori(Kodekonstanter.OId9060Lege);
+            var godkjenninger2 = await service.HentGodkjenninger(hprnummer.ToString());
+            Assert.That(godkjenninger1.Count, Is.EqualTo(godkjenninger2.Count()));
+            Assert.That(godkjenninger2.Count, Is.EqualTo(2));
+
+        }
     }
-
-
-
-
 }

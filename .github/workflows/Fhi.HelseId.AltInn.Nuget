@@ -1,4 +1,4 @@
-name: Fhi.HelseId.Nuget
+name: Fhi.HelseId.AltInn.Nuget
 on:
   push:
     branches:
@@ -20,10 +20,10 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: 'Fhi.HelseId/Fhi.HelseId.csproj'
+          PROJECT_FILE_PATH: 'Fhi.HelseId.AltInn/Fhi.HelseId.AltInn.csproj'
           
           # NuGet package id, used for version detection & defaults to project name
-          PACKAGE_NAME: Fhi.HelseId
+          PACKAGE_NAME: Fhi.HelseId.AltInn
           
           # Regex pattern to extract version info in a capturing group
           VERSION_REGEX: <Version>(.*)<\/Version>
@@ -38,7 +38,7 @@ jobs:
           # TAG_FORMAT: v*
 
           # API key to authenticate with NuGet server
-          NUGET_KEY: ${{secrets.NUGET_ORG_PUSH_API_KEY_HELSEID}}
+          NUGET_KEY: ${{secrets.NUGET_ORG_ALTINN_PUBLISH}}
 
           # NuGet server uri hosting the packages, defaults to https://api.nuget.org
           NUGET_SOURCE: https://api.nuget.org

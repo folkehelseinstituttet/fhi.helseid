@@ -1,16 +1,20 @@
 ﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
 namespace Fhi.HelseId.Web.Hpr.Core
 {
 
     public class OId9060
     {
-        private readonly string value;
+        public string Description { get; }
 
-        internal OId9060(string value)
+        public string Value { get; }
+    
+        internal OId9060(string value,string description="")
         {
-            this.value = value;
+            Value = value;
+            Description = description;
         }
-        public override string ToString() => value;
+        public override string ToString() => Value;
     }
 
     public static partial class Kodekonstanter
@@ -27,6 +31,7 @@ namespace Fhi.HelseId.Web.Hpr.Core
         public const string IkkeSatt = "N/A";
         public const string UkjentOrgIdent = "-1";
 
+        
         public const string OId3101Mann = "1";
         public const string OId3101MannBeskrivelse = "Mann";
         public const string OId3101Kvinne = "2";
