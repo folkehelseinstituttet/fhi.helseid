@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Fhi.HelseId.Common;
 
 namespace Fhi.HelseId.Web
@@ -26,54 +25,28 @@ namespace Fhi.HelseId.Web
 
 
     [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-    public class HelseIdWebKonfigurasjon :  IHelseIdWebKonfigurasjon
+    public class HelseIdWebKonfigurasjon : HelseIdClientKonfigurasjon, IHelseIdWebKonfigurasjon
     {
-        public bool AuthUse { get; set; } = true;
-
-        public bool UseHttps { get; set; } = true;
-
         public bool UseHprNumber { get; set; } = true;
-        public string Authority { get; set; } = "";
-
-        public string ClientId { get; set; } = "";
-
-        public string ClientSecret { get; set; } = "";
-        public string[] Scopes { get; set; } = Array.Empty<string>();
 
         public string[] SecurityLevels { get; set; } = Array.Empty<string>();
-
-        public bool Debug { get; set; } = false;
-
-        private List<string>? allScopes;
-
-
-        public List<string> AllScopes
+        
+        protected override IEnumerable<string> FixedScopes
         {
             get
             {
-                if (allScopes == null)
+                var list =  new List<string>
                 {
-                    allScopes = new List<string>();
-                    allScopes.AddRange(fixedScopes);
-                    allScopes.AddRange(Scopes);
-                    allScopes = allScopes.Distinct().ToList();
-                }
-                return allScopes;
+                    "openid",
+                    "profile",
+                    "helseid://scopes/identity/pid",
+                    "helseid://scopes/identity/pid_pseudonym",
+                    "helseid://scopes/identity/security_level",
+                    "helseid://scopes/hpr/hpr_number"
+                };
+                list.AddRange(base.FixedScopes);
+                return list;
             }
         }
-
-        public string JsonWebKeySecret { get; set; } = "";
-        public string RsaKeySecret { get; set; } = "";
-
-        private readonly List<string> fixedScopes = new List<string>
-        {
-            "openid",
-            "profile",
-            "offline_access",
-            "helseid://scopes/identity/pid",
-            "helseid://scopes/identity/pid_pseudonym",
-            "helseid://scopes/identity/security_level",
-            "helseid://scopes/hpr/hpr_number"
-        };
     }
 }

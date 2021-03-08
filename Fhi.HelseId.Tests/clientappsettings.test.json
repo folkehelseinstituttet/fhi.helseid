@@ -1,0 +1,18 @@
+﻿{
+  "HelseIdWorkerKonfigurasjon": {
+    "Authority": "https://helseid-sts.test.nhn.no/",
+    "ClientId": "somehex",
+    "ClientSecret": "somehex",
+    "Scopes": [
+      "fhi:personoppslag/api"
+    ],
+    "Apis": [
+      {
+        "Name" :  "Personoppslag",
+        "Url": "https://test-personoppslag.fhi.no",
+        "Scope": "fhi:personoppslag/api" 
+      }
+    ]
+    
+  }
+}

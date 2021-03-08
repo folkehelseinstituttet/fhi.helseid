@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>8</LangVersion>
+    <Configurations>Debug;Release</Configurations>
+    <id>Fhi.HelseId.Worker</id>
+    <Version>1.0.0-beta.1</Version>
+    <authors>Folkehelseinstituttet (FHI), Nasjonalt Helsenett (NHN)</authors>
+    <projectUrl>https://github.com/folkehelseinstituttet/Fhi.HelseId</projectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <icon>https://github.com/folkehelseinstituttet/Fhi.HelseId/images/fhi.png</icon>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageDescription>Authentication and authorization component for asp.net core workers access to NHN HelseId</PackageDescription>
+    <PackageCopyright>Copyright ©2021 Folkehelseinstituttet, Nasjonalt Helsenett NHN</PackageCopyright>
+    <!-- Tags appear in the gallery and can be used for tag searches -->
+    <tags>helseid, oauth</tags>
+    <RepositoryUrl>https://github.com/folkehelseinstituttet/Fhi.HelseId</RepositoryUrl>
+    <dependencies>
+      <group targetFramework="netcoreapp3.1">
+      </group>
+    </dependencies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fhi.HelseId\Fhi.HelseId.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="5.0.0" />
+    <PackageReference Include="IdentityModel.AspNetCore" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@
     <LangVersion>8</LangVersion>
     <Configurations>Debug;Release</Configurations>
     <id>Fhi.HelseId</id>
-    <Version>3.0.0</Version>
+    <Version>3.1.0-beta.1</Version>
     <authors>Folkehelseinstituttet (FHI), Nasjonalt Helsenett (NHN)</authors>
     <projectUrl>https://github.com/folkehelseinstituttet/Fhi.HelseId</projectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -40,8 +40,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Analyzers" Version="3.1.9" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.7.0" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.8.1" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="AspNetCore.DataProtection.SqlServer" Version="1.0.2" />
   </ItemGroup>
