@@ -6,7 +6,7 @@
     <LangVersion>8</LangVersion>
     <Configurations>Debug;Release</Configurations>
     <id>Fhi.HelseId</id>
-    <Version>3.1.0-beta.1</Version>
+    <Version>3.1.0</Version>
     <authors>Folkehelseinstituttet (FHI), Nasjonalt Helsenett (NHN)</authors>
     <projectUrl>https://github.com/folkehelseinstituttet/Fhi.HelseId</projectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json.Serialization;
 using Fhi.HelseId.Api.Authorization;
 using Fhi.HelseId.Api.Options;
 using Fhi.HelseId.Api.Services;
@@ -40,7 +41,11 @@ namespace Fhi.HelseId.Api.ExtensionMethods
             IAutentiseringkonfigurasjon config)
         {
             if (!config.AuthUse)
+            {
                 return false;
+            }
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddControllers(config => { config.Filters.Add(new AuthorizeFilter(Policies.ApiAccess)); })
                 .AddJsonOptions(
                     options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
