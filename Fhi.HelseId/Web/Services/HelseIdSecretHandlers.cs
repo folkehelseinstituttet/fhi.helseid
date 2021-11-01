@@ -1,4 +1,6 @@
-﻿using Fhi.HelseId.Common.Identity;
+﻿using Fhi.HelseId.Common;
+using Fhi.HelseId.Common.Identity;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -6,82 +8,105 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using ClientAssertion = Fhi.HelseId.Common.Identity.ClientAssertion;
 
 namespace Fhi.HelseId.Web.Services
 {
     public interface IHelseIdSecretHandler
     {
-        void AddSecretConfiguration(IHelseIdWebKonfigurasjon configAuth, OpenIdConnectOptions options);
+        void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, OpenIdConnectOptions options);
+        void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, ClientCredentialsTokenRequest tokenRequest);
     }
 
-    public class HelseIdJwkSecretHandler : IHelseIdSecretHandler
+    public abstract class HelseIdAsymmetricSecretHandler : IHelseIdSecretHandler
     {
-        public void AddSecretConfiguration(IHelseIdWebKonfigurasjon configAuth, OpenIdConnectOptions options)
+        public virtual void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, OpenIdConnectOptions options)
         {
-            var jwk = File.ReadAllText(configAuth.ClientSecret);
-            var jwkSecurityKey = new JsonWebKey(jwk);
+            var jwkSecurityKey = GetSecurityKey(configAuth);
 
             options.Events.OnAuthorizationCodeReceived = ctx =>
             {
                 ctx.TokenEndpointRequest.ClientAssertionType = IdentityModel.OidcConstants.ClientAssertionTypes.JwtBearer;
-                ctx.TokenEndpointRequest.ClientAssertion = ClientAssertion.Generate(configAuth, jwkSecurityKey);
+                ctx.TokenEndpointRequest.ClientAssertion = ClientAssertion.Generate(configAuth, GetSecurityKey(configAuth));
 
                 return Task.CompletedTask;
             };
         }
+
+        public virtual void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, ClientCredentialsTokenRequest tokenRequest)
+        {
+            tokenRequest.ClientAssertion = new IdentityModel.Client.ClientAssertion
+            {
+                Type = IdentityModel.OidcConstants.ClientAssertionTypes.JwtBearer,
+                Value = ClientAssertion.Generate(configAuth, GetSecurityKey(configAuth))
+            };
+        }
+
+        protected abstract SecurityKey GetSecurityKey(IHelseIdClientKonfigurasjon configAuth);
     }
 
-    public class HelseIdRsaXmlSecretHandler : IHelseIdSecretHandler
+    public class HelseIdJwkSecretHandler : HelseIdAsymmetricSecretHandler
     {
-        public void AddSecretConfiguration(IHelseIdWebKonfigurasjon configAuth, OpenIdConnectOptions options)
+        private SecurityKey? _securityKey = null;
+
+        protected override SecurityKey GetSecurityKey(IHelseIdClientKonfigurasjon configAuth)
         {
-            var xml = File.ReadAllText(configAuth.ClientSecret);
-            var rsa = RSA.Create();
-            rsa.FromXmlString(xml);
-            var rsaSecurityKey = new RsaSecurityKey(rsa);
-
-            options.Events.OnAuthorizationCodeReceived = ctx =>
+            if (_securityKey == null)
             {
-                ctx.TokenEndpointRequest.ClientAssertionType = IdentityModel.OidcConstants.ClientAssertionTypes.JwtBearer;
-                ctx.TokenEndpointRequest.ClientAssertion = ClientAssertion.Generate(configAuth, rsaSecurityKey);
-
-                return Task.CompletedTask;
-            };
+                var jwk = File.ReadAllText(configAuth.ClientSecret);
+                _securityKey = new JsonWebKey(jwk);
+            }
+            return _securityKey;
         }
     }
 
-    public class HelseIdEnterpriseCertificateSecretHandler : IHelseIdSecretHandler
+    public class HelseIdRsaXmlSecretHandler : HelseIdAsymmetricSecretHandler
     {
-        public void AddSecretConfiguration(IHelseIdWebKonfigurasjon configAuth, OpenIdConnectOptions options)
+        private SecurityKey? _securityKey = null;
+
+        protected override SecurityKey GetSecurityKey(IHelseIdClientKonfigurasjon configAuth)
         {
-            var secretParts = configAuth.ClientSecret.Split(':');
-            if(secretParts.Length != 2)
+            if (_securityKey == null)
             {
-                throw new InvalidEnterpriseCertificateSecretException(configAuth.ClientSecret);
+                var xml = File.ReadAllText(configAuth.ClientSecret);
+                var rsa = RSA.Create();
+                rsa.FromXmlString(xml);
+                _securityKey = new RsaSecurityKey(rsa);
             }
+            return _securityKey;
+        }
+    }
 
-            var storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), secretParts[0]);
-            var thumprint = secretParts[1];
-            
-            var store = new X509Store(storeLocation);
-            store.Open(OpenFlags.ReadOnly);
+    public class HelseIdEnterpriseCertificateSecretHandler : HelseIdAsymmetricSecretHandler
+    {
+        private SecurityKey? _securityKey = null;
 
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumprint, true);
-
-            if(certificates.Count == 0)
+        protected override SecurityKey GetSecurityKey(IHelseIdClientKonfigurasjon configAuth)
+        {
+            if (_securityKey == null)
             {
-                throw new Exception($"No certificate with thumbprint {options.ClientSecret} found in store LocalMachine");
+                var secretParts = configAuth.ClientSecret.Split(':');
+                if (secretParts.Length != 2)
+                {
+                    throw new InvalidEnterpriseCertificateSecretException(configAuth.ClientSecret);
+                }
+
+                var storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), secretParts[0]);
+                var thumprint = secretParts[1];
+
+                var store = new X509Store(storeLocation);
+                store.Open(OpenFlags.ReadOnly);
+
+                var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumprint, true);
+
+                if (certificates.Count == 0)
+                {
+                    throw new Exception($"No certificate with thumbprint {configAuth.ClientSecret} found in store LocalMachine");
+                }
+
+                _securityKey = new X509SecurityKey(certificates[0]);
             }
-
-            var x509SecurityKey = new X509SecurityKey(certificates[0]);
-
-            options.Events.OnAuthorizationCodeReceived = ctx =>
-            {
-                ctx.TokenEndpointRequest.ClientAssertionType = IdentityModel.OidcConstants.ClientAssertionTypes.JwtBearer;
-                ctx.TokenEndpointRequest.ClientAssertion = ClientAssertion.Generate(configAuth, x509SecurityKey);
-
-                return Task.CompletedTask;
-            };
+            return _securityKey;
         }
 
         public class InvalidEnterpriseCertificateSecretException : Exception
@@ -99,10 +124,14 @@ namespace Fhi.HelseId.Web.Services
 
     public class HelseIdSharedSecretHandler : IHelseIdSecretHandler
     {
-        public void AddSecretConfiguration(IHelseIdWebKonfigurasjon configAuth, OpenIdConnectOptions options)
+        public void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, OpenIdConnectOptions options)
         {
             options.ClientSecret = configAuth.ClientSecret;
         }
-    }
 
+        public void AddSecretConfiguration(IHelseIdClientKonfigurasjon configAuth, ClientCredentialsTokenRequest tokenRequest)
+        {
+            tokenRequest.ClientSecret = configAuth.ClientSecret;
+        }
+    }
 }

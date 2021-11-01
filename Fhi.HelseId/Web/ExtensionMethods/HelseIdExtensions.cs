@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fhi.HelseId.Common;
 using Fhi.HelseId.Common.Identity;
 using Fhi.HelseId.Web.Infrastructure.AutomaticTokenManagement;
 using Fhi.HelseId.Web.Services;
@@ -34,7 +35,7 @@ namespace Fhi.HelseId.Web.ExtensionMethods
         public static void DefaultHelseIdOptions(this OpenIdConnectOptions options, 
             IHelseIdWebKonfigurasjon configAuth, 
             IRedirectPagesKonfigurasjon redirectPagesKonfigurasjon, 
-            IHelseIdSecretHandler? secretHandler = null)
+            IHelseIdSecretHandler secretHandler)
         {
             var acrValues = GetAcrValues(configAuth); // spesielt for id-porten, e.g. krever sikkerhetsnivå 4
             var hasAcrValues = !string.IsNullOrWhiteSpace(acrValues);
@@ -72,15 +73,9 @@ namespace Fhi.HelseId.Web.ExtensionMethods
                 return Task.CompletedTask;
             };
 
-            options.AccessDeniedPath = redirectPagesKonfigurasjon.Forbidden;
+            options.AccessDeniedPath = redirectPagesKonfigurasjon.Forbidden;    
 
-            if(secretHandler == null)
-            {
-                // Defaults to Shared Secret to be backwards compatible
-                secretHandler = new HelseIdSharedSecretHandler();
-            }
-
-            secretHandler.AddSecretConfiguration(configAuth, options);
+            secretHandler.AddSecretConfiguration(configAuth as IHelseIdClientKonfigurasjon, options);
 
             string GetAcrValues(IHelseIdWebKonfigurasjon helseIdWebKonfigurasjon)
             {

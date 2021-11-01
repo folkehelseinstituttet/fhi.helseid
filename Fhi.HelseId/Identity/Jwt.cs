@@ -15,7 +15,7 @@ namespace Fhi.HelseId.Common.Identity
 {
     public static class ClientAssertion
     {
-        public static string Generate(IHelseIdWebKonfigurasjon configAuth, SecurityKey securityKey)
+        public static string Generate(IHelseIdClientKonfigurasjon configAuth, SecurityKey securityKey)
         {
 
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.RsaSha512);

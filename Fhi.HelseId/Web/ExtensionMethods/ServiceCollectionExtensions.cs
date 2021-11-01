@@ -112,7 +112,7 @@ namespace Fhi.HelseId.Web.ExtensionMethods
             IRedirectPagesKonfigurasjon redirectPagesKonfigurasjon,
             IHprFeatureFlags hprKonfigurasjon,
             IWhitelist whitelist,
-            IHelseIdSecretHandler? secretHandler,
+            IHelseIdSecretHandler secretHandler,
             Action<MvcOptions>? configureMvc)
         {
             if (helseIdKonfigurasjon.AuthUse)
@@ -151,7 +151,7 @@ namespace Fhi.HelseId.Web.ExtensionMethods
             IRedirectPagesKonfigurasjon redirectPagesKonfigurasjon,
             IHprFeatureFlags hprKonfigurasjon,
             IWhitelist whitelist,
-            IHelseIdSecretHandler? secretHandler,
+            IHelseIdSecretHandler secretHandler,
             Action<MvcOptions>? configureMvc)
         {
             (string policyName, IMvcBuilder mvcBuilder) = services.AddHelseIdWebAuthenticationInternal(
@@ -167,7 +167,7 @@ namespace Fhi.HelseId.Web.ExtensionMethods
             IRedirectPagesKonfigurasjon redirectPagesKonfigurasjon,
             IHprFeatureFlags hprKonfigurasjon,
             IWhitelist whitelist,
-            IHelseIdSecretHandler? secretHandler = null)
+            IHelseIdSecretHandler secretHandler = null)
         {
             (string policyName, IMvcBuilder mvcBuilder) = services.AddHelseIdWebAuthenticationInternal(
                 helseIdKonfigurasjon, redirectPagesKonfigurasjon, hprKonfigurasjon, whitelist, secretHandler, null
@@ -184,8 +184,7 @@ namespace Fhi.HelseId.Web.ExtensionMethods
             IRedirectPagesKonfigurasjon redirectPagesKonfigurasjon,
             IHprFeatureFlags hprKonfigurasjon,
             IWhitelist whitelist,
-            IHelseIdSecretHandler? secretHandler = null
-            )
+            IHelseIdSecretHandler secretHandler)
         {
             const double tokenRefreshBeforeExpirationTime = 2;
 
