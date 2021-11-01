@@ -33,7 +33,10 @@ namespace Fhi.HelseId.Api.ExtensionMethods
                 services
                     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddHelseIdJwtBearer(config);
-                services.AddHelseIdAuthorization(config);
+                if (config.RequireContextIdentity)
+                    services.AddHelseIdAuthorization(config);
+                else
+                    services.AddHelseIdApiAccessOnlyAuthorization(config);
             }
         }
 
@@ -46,7 +49,7 @@ namespace Fhi.HelseId.Api.ExtensionMethods
             }
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            services.AddControllers(config => { config.Filters.Add(new AuthorizeFilter(Policies.ApiAccess)); })
+            services.AddControllers(cfg => { cfg.Filters.Add(new AuthorizeFilter(Policies.ApiAccess)); })
                 .AddJsonOptions(
                     options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
             return true;

@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="5.0.0" />
+    <PackageReference Include="IdentityModel" Version="5.1.0" />
     <PackageReference Include="IdentityModel.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 

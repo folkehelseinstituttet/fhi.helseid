@@ -20,7 +20,7 @@ namespace Fhi.HelseId.Common
 
     public abstract class HelseIdClientKonfigurasjon : IHelseIdClientKonfigurasjon
     {
-        private List<string>? allScopes;
+        protected List<string>? AllTheScopes { get; private set; }
         public bool AuthUse { get; set; } = true;
         public bool UseHttps { get; set; } = true;
         public string Authority { get; set; } = "";
@@ -29,17 +29,22 @@ namespace Fhi.HelseId.Common
         public string[] Scopes { get; set; } = Array.Empty<string>();
         public bool Debug { get; set; } = false;
 
+        public virtual void MergeScopes()
+        {
+            AllTheScopes = null;
+        }
+
         public List<string> AllScopes
         {
             get
             {
-                if (allScopes != null)
-                    return allScopes;
-                allScopes = new List<string>();
-                allScopes.AddRange(FixedScopes);
-                allScopes.AddRange(Scopes);
-                allScopes = allScopes.Distinct().ToList();
-                return allScopes;
+                if (AllTheScopes != null)
+                    return AllTheScopes;
+                AllTheScopes = new List<string>();
+                AllTheScopes.AddRange(FixedScopes);
+                AllTheScopes.AddRange(Scopes);
+                AllTheScopes = AllTheScopes.Distinct().ToList();
+                return AllTheScopes;
             }
         }
 

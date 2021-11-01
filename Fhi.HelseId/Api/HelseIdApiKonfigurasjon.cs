@@ -15,6 +15,7 @@ namespace Fhi.HelseId.Api
         string ApiName { get;  }
         string ApiScope { get;  }
         bool UseHttps { get;  }
+        bool RequireContextIdentity { get;  }
     }
 
     public class HelseIdApiKonfigurasjon :  IHelseIdApiFeatures, IHelseIdApiKonfigurasjon
@@ -26,5 +27,7 @@ namespace Fhi.HelseId.Api
 
         public bool AuthUse { get; set; } = true;
         public bool UseHttps { get; set; } = true;
+
+        public bool RequireContextIdentity { get; set; } = false;
     }
 }

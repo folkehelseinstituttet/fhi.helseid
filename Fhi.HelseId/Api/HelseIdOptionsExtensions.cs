@@ -38,6 +38,11 @@ namespace Fhi.HelseId.Api
 
         
 
+        /// <summary>
+        /// This adds policies for requiring caller to be an user with an authenticated Identity.  Note that this might also be something else than HelseId, and might be confusing.
+        /// This policy can not be used with Worker processes.
+        /// This policy also adds the Api scope requirement
+        /// </summary>
         public static void AddHelseIdAuthorization(this IServiceCollection services, IHelseIdApiKonfigurasjon configAuth)
         {
             services.AddAuthorization(
@@ -54,6 +59,25 @@ namespace Fhi.HelseId.Api
                     config.DefaultPolicy = apiAccessPolicy;
 
                     config.AddPolicy(Policies.HidAuthenticated, authenticatedHidUserPolicy);
+                    config.AddPolicy(Policies.ApiAccess, apiAccessPolicy);
+                }
+            );
+        }
+
+        /// <summary>
+        /// This policy only adds the Api scope requirement
+        /// </summary>
+        public static void AddHelseIdApiAccessOnlyAuthorization(this IServiceCollection services, IHelseIdApiKonfigurasjon configAuth)
+        {
+            services.AddAuthorization(
+                config =>
+                {
+                    var apiAccessPolicy = new AuthorizationPolicyBuilder()
+                        .RequireScope(configAuth.ApiScope)
+                        .Build();
+
+                    config.DefaultPolicy = apiAccessPolicy;
+
                     config.AddPolicy(Policies.ApiAccess, apiAccessPolicy);
                 }
             );
