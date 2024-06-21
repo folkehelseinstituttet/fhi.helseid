@@ -37,8 +37,8 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.27" />
-    <PackageReference Include="Refit" Version="7.0.0" />
-    <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+    <PackageReference Include="Refit" Version="7.1.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="7.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.HeaderPropagation" Version="6.0.27" />
     <PackageReference Include="Fhi.HelseId" Version="5.*" />
   </ItemGroup>
